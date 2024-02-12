@@ -1,1 +1,3 @@
 # stock-backtesting-tool
+
+## Purpose
