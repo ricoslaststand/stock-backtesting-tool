@@ -3,9 +3,10 @@ version: '3.8'
 services:
   webapp:
     build:
+      context: .
       dockerfile: Dockerfile
-    volumes:
-    - .:/app
-    command: sleep infinity
     ports:
-      - 8008:8000
+      - "80:80"
+    volumes:
+      - .:/app
+      - /app/.venv
