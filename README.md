@@ -6,8 +6,8 @@ Created this tool to help backtest trading strategies while providing a frontend
 
 ## Ideas
 
-- List out all of the strategies that you have currently running via an endpoint
--
+- List out all of the strategies that you have currently running via an endpoint.
+- Run a strategy
 
 ## Architecture
 

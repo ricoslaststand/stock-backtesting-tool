@@ -1,30 +1,34 @@
 from fastapi import FastAPI
 
-import yfinance as yf
-import backtrader as bt
+import app.strategies.SmaCross as SmaCross
+
+from backtesting import Backtest
+from backtesting.test import GOOG
 
 app = FastAPI()
 
 
 @app.get("/")
 def read_root():
-    cerebro = bt.Cerebro()
-    # cerebro.addstrategy(AvgComparedToXDayAvgStrategy)
+    # class SmaCross(Strategy):
+    #     n1 = 10
+    #     n2 = 20
 
-    # Add a strategy
-    cerebro.addstrategy(bt.Strategy)
+    #     def init(self):
+    #         close = self.data.Close
+    #         self.sma1 = self.I(SMA, close, self.n1)
+    #         self.sma2 = self.I(SMA, close, self.n2)
 
-    cerebro.broker.setcash(100000)
+    #     def next(self):
+    #         if crossover(self.sma1, self.sma2):
+    #             self.buy()
+    #         elif crossover(self.sma2, self.sma1):
+    #             self.sell()
 
-    # fileName = "YHOO.csv"
-    # file = open(fileName, "w")
-    # file.close()
+    bt = Backtest(GOOG, SmaCross, cash=10000, commission=0.002, exclusive_orders=True)
 
-    # Create a Data Feed
-    data = bt.feeds.PandasData(
-        dataname=yf.download("SPY", "2021-06-06", "2021-07-01", auto_adjust=True)
-    )
-    # Add the Data Feed to Cerebro
-    cerebro.adddata(data)
-    cerebro.run()
-    return {"Hello": cerebro.broker.getvalue()}
+    results = bt.run()
+
+    print("numberOfResults =", len(results))
+
+    return {"Hello": results.to_string()}
