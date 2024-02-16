@@ -14,3 +14,4 @@ repos:
         # Run the formatter.
         -   id: ruff-format
         -   id: ruff
+            args: [ --fix ]

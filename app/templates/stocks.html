@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block style %}
+  <style>
+    li.htmx-swapping {
+      opacity: 0;
+      transition: opacity 1s ease-out;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <div class="uk-card uk-card-default uk-card-body uk-width-1-2@m uk-margin-top">
+    <input type="text" name="tickerSymbol"
+        hx-get="/stocks-list"
+        hx-include="[ticker_symbol='tickerSymbol']"
+        hx-trigger="keyup delay:500ms changed"
+        hx-target="#stocks"
+        placeholder="Search..."
+    >
+    <ul id="stocks" class="uk-list uk-list-divider">
+      {% for stock in stocks %}
+        <li><a href="/?ticker_symbol={{ stock.Symbol }}">{{ stock.Name }} ({{ stock.Symbol }})</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script>
+    htmx.on('htmx:afterSwap', function(event) {
+      document.getElementById("contentInput").value = ""
+    });
+  </script>
+{% endblock %}
