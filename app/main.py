@@ -2,6 +2,8 @@ from fastapi import FastAPI
 
 import yfinance as yf
 
+import json
+
 from pandas_datareader import data as pdr
 
 # download dataframe
@@ -27,4 +29,4 @@ def read_root(ticker_symbol: str = "SPY"):
 
     print("results =", results)
 
-    return {"Hello": results.to_string()}
+    return json.loads(results.to_json())
