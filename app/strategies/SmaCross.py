@@ -1,20 +1,24 @@
 from backtesting import Strategy
-from backtesting.lib import crossover
 
 
 class SmaCross(Strategy):
+    n1 = 10
+    n2 = 20
+    name = "SmaCross"
+
     def init(self):
+        # close = self.data.Close
         print("Hello World")
 
     def next(self):
-        # If sma1 crosses above sma2, close any existing
-        # short trades, and buy the asset
-        if crossover(self.sma1, self.sma2):
-            self.position.close()
-            self.buy()
+        self.buy()
 
-        # Else, if sma1 crosses below sma2, close any existing
-        # long trades, and sell the asset
-        elif crossover(self.sma2, self.sma1):
-            self.position.close()
-            self.sell()
+        # lastTwo = self.data[-2:]
+        # twoPrior = self.data[-3:-5]
+
+        # lastTwo[0].v
+
+        # if crossover(self.sma1, self.sma2):
+        #     self.buy()
+        # elif crossover(self.sma2, self.sma1):
+        #     self.sell()

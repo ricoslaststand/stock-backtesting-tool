@@ -14,6 +14,8 @@ backtrader = "^1.9.78.123"
 requests = "^2.31.0"
 yfinance = "^0.2.36"
 backtesting = "^0.3.3"
+pandas-datareader = "^0.10.0"
+pendulum = "^3.0.0"
 
 [tool.poetry.scripts]
 my-script = "my_module:main"
