@@ -36,12 +36,21 @@ class VolumeDiff(Strategy):
                 print("bought something")
                 self.buy()
 
+            now = pendulum.now()
+
             for trade in self.trades:
-                if (
-                    pendulum.now()
-                    .diff(pendulum.from_timestamp(int(trade.entry_time.timestamp())))
-                    .in_days()
-                    >= self.timeframeLen
-                ):
+                entryTime = pendulum.from_timestamp(trade.entry_time.timestamp())
+
+                print(
+                    "trade.entry_time =",
+                    pendulum.from_timestamp(trade.entry_time.timestamp()),
+                )
+
+                # entryTime = pendulum(trade.entry_time)
+
+                # TODO: Create tool to get
+                if entryTime.diff(now).in_days() >= self.timeframeLen:
                     print("close out trade position")
                     trade.close()
+
+                    pendulum.now()

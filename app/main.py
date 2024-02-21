@@ -40,10 +40,6 @@ def read_root(ticker_symbol: str = "SPY"):
 
     results = bt.run()
 
-    print("numberOfResults =", len(results))
-
-    print("results =", results)
-
     return json.loads(results.to_json())
 
 
