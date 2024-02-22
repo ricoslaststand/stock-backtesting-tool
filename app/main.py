@@ -9,7 +9,7 @@ import yfinance as yf
 import json
 
 import requests
-import requests_cache
+# import requests_cache
 
 from fastapi.templating import Jinja2Templates
 
@@ -26,12 +26,14 @@ yf.pdr_override()  # <== that's all it takes :-)
 app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
 
-session = requests.Session()
+# session = requests.Session()
 
 
 @app.get("/")
 def read_root(ticker_symbol: str = "SPY"):
     data = pdr.get_data_yahoo(ticker_symbol, start="2017-03-01", end="2017-04-30")
+
+    print("data =", data)
 
     if len(data) == 0:
         return {"error": "There is no stock data for this time range."}
@@ -47,8 +49,8 @@ def filterTickerSymbol(stock, tickerSymbol):
     return stock["Name"].lower() in tickerSymbol
 
 
-def getListOfStocks(tickerSymbol: Union[str, None] = None):
-    stockResponse = requests_cache.CachedSession("cache").get(
+def getListOfStocks(tickerSymbol: str | None = None):
+    stockResponse = requests.get(
         "https://pkgstore.datahub.io/core/s-and-p-500-companies/constituents_json/data/297344d8dc0a9d86b8d107449c851cc8/constituents_json.json"
     )
 
@@ -86,7 +88,7 @@ def read_stocks(request: Request, ticker_symbol: Union[str, None] = None):
 
 
 @app.get("/stocks-list")
-def get_stocks_list(tickerSymbol: Union[str, None] = None):
+def get_stocks_list(tickerSymbol: str | None = None):
     stocks = getListOfStocks(tickerSymbol)
 
     print("ticker_symbol =", tickerSymbol)

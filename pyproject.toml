@@ -6,16 +6,17 @@ authors = ["Connor Young <connoryoungkicker@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
-fastapi = "^0.109.0"
-pydantic = "^2.6.0"
-uvicorn = "^0.27.0"
+python = "^3.11"
+fastapi = "^0.109.2"
+pydantic = "^2.6.1"
+uvicorn = "^0.27.1"
 requests = "^2.31.0"
 yfinance = "^0.2.36"
 backtesting = "^0.3.3"
 pandas-datareader = "^0.10.0"
 pendulum = "^3.0.0"
-requests-cache = "^1.1.1"
+requests-cache = "^1.2.0"
+exchange-calendars = "^4.5.3"
 
 [tool.poetry.scripts]
 my-script = "my_module:main"
