@@ -22,4 +22,3 @@ repos:
         -   id: poetry-lock
         -   id: poetry-export
         -   id: poetry-install
-
