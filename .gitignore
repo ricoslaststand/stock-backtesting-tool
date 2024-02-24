@@ -163,4 +163,4 @@ cython_debug/
 
 *.sqlite
 
-stock_hits.csv
+stock_hits*.csv

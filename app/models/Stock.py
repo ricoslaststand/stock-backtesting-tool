@@ -16,3 +16,5 @@ class StockClosedTrade(BaseModel):
     exit_time: datetime.datetime
     trade_duration: str
     profit_percentage: Decimal = Field(max_digits=5, decimal_places=1)
+    entry_price: Decimal = Field(max_digits=13, decimal_places=7)
+    exit_price: Decimal = Field(max_digits=13, decimal_places=7)

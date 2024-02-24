@@ -26,7 +26,7 @@ from app.clients.StockClient import StockClient
 
 from app.models.Stock import StockClosedTrade
 
-yf.pdr_override()  # <== that's all it takes :-)
+yf.pdr_override()
 
 app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
@@ -36,7 +36,7 @@ stocksClient = StockClient
 
 @app.get("/")
 def read_root(ticker_symbol: str = "SPY"):
-    data = pdr.get_data_yahoo(ticker_symbol, start="2017-03-01", end="2018-04-30")
+    data = pdr.get_data_yahoo(ticker_symbol, start="2023-03-01", end="2024-03-01")
 
     if len(data) == 0:
         return {"error": "There is no stock data for this time range."}
@@ -65,11 +65,7 @@ def getListOfStocks(tickerSymbol: str | None = None):
     def filterTickerSymbol(stock):
         return stock["Name"].startswith(tickerSymbol)
 
-    print(stockResponse.json())
-
     stocks = None
-
-    print("About to filter stocks")
 
     if tickerSymbol:
         stocks = filter(filterTickerSymbol, stockResponse.json())
@@ -99,10 +95,6 @@ def get_stocks_list(tickerSymbol: str | None = None):
     return {"stocks": stocks}
 
 
-# @app.get("/strategies", response_class=HTMLResponse)
-# def read_stocks()
-
-
 @app.get("/strategies")
 def read_strategies():
     arr = []
@@ -114,47 +106,61 @@ def read_strategies():
 
 
 def main() -> None:
-    print("Hello World")
-    stocks = StockClient.getStocks("AAPL")
+    stocks = StockClient.getStocks()
 
     hits = []
     for stock in stocks:
-        data = pdr.get_data_yahoo(stock.symbol, start="2022-03-01", end="2022-09-01")
-
-        if len(data) == 0:
-            return {"error": "There is no stock data for this time range."}
-
-        bt = Backtest(data, VolumeDiff, cash=10000, exclusive_orders=False)
-
-        results = bt.run()
-
-        # print("results =", results)
-
-        # print("type(results) =", type(results["_trades"]))
-
-        for trade in results["_trades"].iterrows():
-            # print("type(trade) =", type(trade))
-            # print("trade =", trade[1])
-            # print("len(trade) =", len(trade))
-            # # print("tickerSymbol =", trade[[1][1]])
-
-            # print("type(trade_duration) =", type(trade[1]["Duration"]))
-
-            hits.append(
-                StockClosedTrade(
-                    ticker_symbol=stock.symbol,
-                    entry_time=trade[1]["EntryTime"],
-                    exit_time=trade[1]["ExitTime"],
-                    profit_percentage=round(trade[1]["ReturnPct"] * 100, 1),
-                    trade_duration=f'{trade[1]["Duration"]}',
-                )
+        data = None
+        try:
+            data = pdr.get_data_yahoo(
+                stock.symbol, start="2023-03-01", end="2024-03-01"
             )
-            print(trade)
+        except Exception:
+            continue
+        else:
+            if data.empty:
+                continue
 
-    print("hits =", hits)
+            bt = Backtest(data, VolumeDiff, cash=10000, exclusive_orders=False)
 
-    with open("stock_hits.csv", mode="w") as stock_hits_file:
+            results = bt.run()
+
+            for trade in results["_trades"].iterrows():
+                # print("type(trade) =", type(trade))
+                # print("trade =", trade[1])
+                # print("len(trade) =", len(trade))
+                # # print("tickerSymbol =", trade[[1][1]])
+
+                # print("type(trade_duration) =", type(trade[1]["Duration"]))
+
+                hits.append(
+                    StockClosedTrade(
+                        ticker_symbol=stock.symbol,
+                        entry_time=trade[1]["EntryTime"],
+                        exit_time=trade[1]["ExitTime"],
+                        profit_percentage=round(trade[1]["ReturnPct"] * 100, 1),
+                        trade_duration=f'{trade[1]["Duration"]}',
+                        entry_price=round(trade[1]["EntryPrice"], 7),
+                        exit_price=round(trade[1]["ExitPrice"], 7),
+                    )
+                )
+
+    with open(
+        f"stock_hits_timeframeLen_{VolumeDiff.timeframeLen}_days.csv", mode="w"
+    ) as stock_hits_file:
         stock_hits_writer = csv.writer(stock_hits_file, delimiter=",")
+
+        stock_hits_writer.writerow(
+            [
+                "Ticker Symbol",
+                "Entry Time",
+                "Exit Time",
+                "Entry Price",
+                "Exit Price",
+                "Profit Percentage",
+                "Trade Duration",
+            ]
+        )
 
         for hit in hits:
             stock_hits_writer.writerow(
@@ -162,6 +168,8 @@ def main() -> None:
                     hit.ticker_symbol,
                     hit.entry_time,
                     hit.exit_time,
+                    hit.entry_price,
+                    hit.exit_price,
                     hit.profit_percentage,
                     hit.trade_duration,
                 ]

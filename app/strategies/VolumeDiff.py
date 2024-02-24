@@ -49,7 +49,12 @@ class VolumeDiff(Strategy):
                     ).strftime("%Y-%m-%d")
                 )
 
+                # print(trade.entry_time.date())
+
                 if not hasattr(trade, "exit_date"):
+                    # print("entry_time =", trade.entry_time.date())
+                    # print("dateInFuture =", dateInFuture)
+
                     self.count += 1
 
                     # print("trade.entry_time =", trade.entry_time.date())
