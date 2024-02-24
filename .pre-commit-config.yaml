@@ -22,3 +22,5 @@ repos:
         -   id: poetry-lock
         -   id: poetry-export
         -   id: poetry-install
+default_language_version:
+    python: python3.11

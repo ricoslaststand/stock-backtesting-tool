@@ -9,7 +9,6 @@ import yfinance as yf
 import json
 
 import requests
-# import requests_cache
 
 from fastapi.templating import Jinja2Templates
 
@@ -21,24 +20,28 @@ from app.strategies.VolumeDiff import VolumeDiff
 
 from backtesting import Backtest
 
+from app.clients.StockClient import StockClient
+
+from app.models.Stock import StockClosedTrade
+
 yf.pdr_override()  # <== that's all it takes :-)
 
 app = FastAPI()
 templates = Jinja2Templates(directory="app/templates")
 
-# session = requests.Session()
+stocksClient = StockClient
 
 
 @app.get("/")
 def read_root(ticker_symbol: str = "SPY"):
-    data = pdr.get_data_yahoo(ticker_symbol, start="2017-03-01", end="2017-04-30")
-
-    print("data =", data)
+    data = pdr.get_data_yahoo(ticker_symbol, start="2017-03-01", end="2018-04-30")
 
     if len(data) == 0:
         return {"error": "There is no stock data for this time range."}
 
-    bt = Backtest(data, VolumeDiff, cash=10000, commission=0.002, exclusive_orders=True)
+    bt = Backtest(
+        data, VolumeDiff, cash=10000000000, commission=0.002, exclusive_orders=False
+    )
 
     results = bt.run()
 
@@ -58,8 +61,6 @@ def getListOfStocks(tickerSymbol: str | None = None):
         return {"error": "Unable to fetch stocks data"}
 
     def filterTickerSymbol(stock):
-        print("stock =", stock)
-        print("ticker_symbol =", tickerSymbol)
         return stock["Name"].startswith(tickerSymbol)
 
     print(stockResponse.json())
@@ -105,6 +106,45 @@ def read_strategies():
     arr = []
 
     for strategy in [VolumeDiff]:
-        arr.append({"name": strategy.name})
+        arr.append({"name": strategy.name, "description": "Stuff goes on."})
 
     return {"strategies": arr}
+
+
+def main() -> None:
+    print("Hello World")
+    stocks = StockClient.getStocks("AAPL")
+
+    hits = []
+    for stock in stocks:
+        data = pdr.get_data_yahoo(stock.symbol, start="2022-03-01", end="2022-09-01")
+
+        if len(data) == 0:
+            return {"error": "There is no stock data for this time range."}
+
+        bt = Backtest(data, VolumeDiff, cash=10000, exclusive_orders=False)
+
+        results = bt.run()
+
+        print("results =", results)
+
+        print("type(results) =", type(results["_trades"]))
+
+        for trade in results["_trades"].iterrows():
+            print("type(trade) =", type(trade))
+            print("trade =", trade[1])
+            print("len(trade) =", len(trade))
+            # print("tickerSymbol =", trade[[1][1]])
+
+            hits.append(
+                StockClosedTrade(
+                    ticker_symbol=stock.symbol,
+                    entry_time=trade[1]["EntryTime"],
+                    exit_time=trade[1]["ExitTime"],
+                    profit_percentage=round(trade[1]["ReturnPct"], 1),
+                )
+            )
+            print(trade)
+
+
+main()
