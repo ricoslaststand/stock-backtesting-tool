@@ -14,5 +14,5 @@ class StockClosedTrade(BaseModel):
     ticker_symbol: str
     entry_time: datetime.datetime
     exit_time: datetime.datetime
-    trade_duration: Decimal = Field(max_digits=5, decimal_places=1)
+    trade_duration: str
     profit_percentage: Decimal = Field(max_digits=5, decimal_places=1)

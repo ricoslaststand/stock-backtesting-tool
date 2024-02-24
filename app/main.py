@@ -4,6 +4,8 @@ from fastapi.responses import HTMLResponse
 
 from typing import Union
 
+import csv
+
 import yfinance as yf
 
 import json
@@ -126,25 +128,44 @@ def main() -> None:
 
         results = bt.run()
 
-        print("results =", results)
+        # print("results =", results)
 
-        print("type(results) =", type(results["_trades"]))
+        # print("type(results) =", type(results["_trades"]))
 
         for trade in results["_trades"].iterrows():
-            print("type(trade) =", type(trade))
-            print("trade =", trade[1])
-            print("len(trade) =", len(trade))
-            # print("tickerSymbol =", trade[[1][1]])
+            # print("type(trade) =", type(trade))
+            # print("trade =", trade[1])
+            # print("len(trade) =", len(trade))
+            # # print("tickerSymbol =", trade[[1][1]])
+
+            # print("type(trade_duration) =", type(trade[1]["Duration"]))
 
             hits.append(
                 StockClosedTrade(
                     ticker_symbol=stock.symbol,
                     entry_time=trade[1]["EntryTime"],
                     exit_time=trade[1]["ExitTime"],
-                    profit_percentage=round(trade[1]["ReturnPct"], 1),
+                    profit_percentage=round(trade[1]["ReturnPct"] * 100, 1),
+                    trade_duration=f'{trade[1]["Duration"]}',
                 )
             )
             print(trade)
+
+    print("hits =", hits)
+
+    with open("stock_hits.csv", mode="w") as stock_hits_file:
+        stock_hits_writer = csv.writer(stock_hits_file, delimiter=",")
+
+        for hit in hits:
+            stock_hits_writer.writerow(
+                [
+                    hit.ticker_symbol,
+                    hit.entry_time,
+                    hit.exit_time,
+                    hit.profit_percentage,
+                    hit.trade_duration,
+                ]
+            )
 
 
 main()
