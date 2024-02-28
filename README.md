@@ -12,7 +12,8 @@ Created this tool to help backtest trading strategies while providing a frontend
 ## TODO List
 
 - [ ] Refactor file generation into different classes
-- [ ] Dockerize application
+- [X] Dockerize application
+- [ ] Create
 
 ## Architecture
 
