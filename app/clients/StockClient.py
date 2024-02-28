@@ -1,4 +1,4 @@
-from ..models.Stock import Stock
+from models.Stock import Stock
 
 from typing import List
 

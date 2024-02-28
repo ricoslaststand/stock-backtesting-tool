@@ -5,7 +5,7 @@ import pendulum
 import pandas as pd
 
 from typing import Dict
-from ..utils.TradingCalendarUtils import TradingCalendarUtils
+from utils.TradingCalendarUtils import TradingCalendarUtils
 
 
 def SMA(array, n):
@@ -45,12 +45,7 @@ class VolumeDiff(Strategy):
                     trade.entry_time.date(), self.timeframeLen - 1
                 ).strftime("%Y-%m-%d")
 
-                # print(trade.entry_time.date())
-
                 if not hasattr(trade, "exit_date"):
-                    # print("entry_time =", trade.entry_time.date())
-                    # print("dateInFuture =", dateInFuture)
-
                     self.count += 1
 
                     lastTwo = self.data.df.tail(2)
