@@ -9,6 +9,11 @@ Created this tool to help backtest trading strategies while providing a frontend
 - List out all of the strategies that you have currently running via an endpoint.
 - Run a strategy
 
+## TODO List
+
+- [ ] Refactor file generation into different classes
+- [ ] Dockerize application
+
 ## Architecture
 
 ```mermaid

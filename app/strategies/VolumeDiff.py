@@ -26,8 +26,6 @@ class VolumeDiff(Strategy):
         self.maVol2 = self.I(SMA, self.data.Volume, 2)
 
     def next(self):
-        # print("\n\n")
-
         if len(self.data.df) > self.timeframeLen:
             lastXValues = self.data.df.tail(self.timeframeLen)
 
@@ -45,7 +43,7 @@ class VolumeDiff(Strategy):
             for trade in self.trades:
                 dateInFuture = (
                     TradingCalendarUtils.TradingCalendarUtils.getSessionDateXSessions(
-                        trade.entry_time.date(), self.timeframeLen
+                        trade.entry_time.date(), self.timeframeLen - 1
                     ).strftime("%Y-%m-%d")
                 )
 
@@ -57,16 +55,20 @@ class VolumeDiff(Strategy):
 
                     self.count += 1
 
-                    # print("trade.entry_time =", trade.entry_time.date())
-                    # print("today =", today)
+                    lastTwo = self.data.df.tail(2)
+
+                    trade.real_entry_date = lastTwo.index.values[0]
+                    trade.real_entry_price = lastTwo.at[trade.real_entry_date, "Close"]
+                    trade.real_volume = lastTwo.at[trade.real_entry_date, "Volume"]
+
+                    # print("trade.real_entry_price =", trade.real_entry_price)
+
+                    # print("trade.entry_time =", trade.entry_time)
+                    # print("trade_real_entry_date =", trade.real_entry_date)
                     trade.exit_date = dateInFuture
-                    # print("self.count =", self.count)
-                    # print("trade.exit_date =", trade.exit_date)
 
                 if trade.exit_date == today.strftime("%Y-%m-%d"):
                     trade.close()
-
-        # print("\n\n")
 
     def __checkStrategy__(self, lastTwo: pd.DataFrame, twoPrior: pd.DataFrame) -> bool:
         for _, row in lastTwo.iterrows():

@@ -26,6 +26,8 @@ from app.clients.StockClient import StockClient
 
 from app.models.Stock import StockClosedTrade
 
+from app.utils.TradingCalendarUtils import TradingCalendarUtils
+
 yf.pdr_override()
 
 app = FastAPI()
@@ -105,6 +107,10 @@ def read_strategies():
     return {"strategies": arr}
 
 
+def getProfitDiff(prevPrice: float, currPrice: float) -> float:
+    return (currPrice - prevPrice) / prevPrice
+
+
 def main() -> None:
     stocks = StockClient.getStocks()
 
@@ -125,7 +131,10 @@ def main() -> None:
 
             results = bt.run()
 
+            print("results =", results["_strategy"])
+
             for trade in results["_trades"].iterrows():
+                # print("trade =", trade[1])
                 # print("type(trade) =", type(trade))
                 # print("trade =", trade[1])
                 # print("len(trade) =", len(trade))
@@ -133,15 +142,52 @@ def main() -> None:
 
                 # print("type(trade_duration) =", type(trade[1]["Duration"]))
 
+                entry_time = trade[1]["EntryTime"]
+                print("entry_time =", entry_time)
+                # prior_stock_entry_time = TradingCalendarUtils.getSessionDateXSessions(entry_time, -1)
+                # print("prior_stock_entry_time =", prior_stock_entry_time)
+
+                real_entry_time = TradingCalendarUtils.getSessionDateXSessions(
+                    entry_time, -1
+                )
+                real_exit_time = TradingCalendarUtils.getSessionDateXSessions(
+                    real_entry_time, 4
+                )
+
+                # print("real_entry_time =", real_entry_time)
+                # print("real_exit_time =", real_exit_time)
+
+                # print(data.index.indexer_at_time(real_entry_time))
+
+                entryDate = None
+                exitDate = None
+
+                try:
+                    entryDate = data.loc[real_entry_time.strftime("%Y-%m-%d")]
+                    exitDate = data.loc[real_exit_time.strftime("%Y-%m-%d")]
+                except KeyError:
+                    continue
+
+                # print("entryDate.name =", entryDate.name)
+                # print("type(entryDate.name) =", type(entryDate.name))
+
+                # print("entryDate =", type(entryDate.index.name))
+                # print("exitDate =", type(exitDate.index))
+
+                entryPrice = round(entryDate["Close"], 7)
+                exitPrice = round(exitDate["Close"], 7)
+
                 hits.append(
                     StockClosedTrade(
                         ticker_symbol=stock.symbol,
-                        entry_time=trade[1]["EntryTime"],
-                        exit_time=trade[1]["ExitTime"],
-                        profit_percentage=round(trade[1]["ReturnPct"] * 100, 1),
-                        trade_duration=f'{trade[1]["Duration"]}',
-                        entry_price=round(trade[1]["EntryPrice"], 7),
-                        exit_price=round(trade[1]["ExitPrice"], 7),
+                        entry_time=entryDate.name.to_pydatetime(),
+                        exit_time=exitDate.name.to_pydatetime(),
+                        profit_percentage=round(
+                            getProfitDiff(entryPrice, exitPrice) * 100, 1
+                        ),
+                        trade_duration="",
+                        entry_price=entryPrice,
+                        exit_price=exitPrice,
                     )
                 )
 
