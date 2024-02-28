@@ -7,6 +7,7 @@ import pandas as pd
 from typing import Dict
 from ..utils.TradingCalendarUtils import TradingCalendarUtils
 
+
 def SMA(array, n):
     """Simple moving average"""
     return pd.Series(array).rolling(n).mean()
@@ -40,11 +41,9 @@ class VolumeDiff(Strategy):
             today = pendulum.from_timestamp(date.timestamp())
 
             for trade in self.trades:
-                dateInFuture = (
-                    TradingCalendarUtils.getSessionDateXSessions(
-                        trade.entry_time.date(), self.timeframeLen - 1
-                    ).strftime("%Y-%m-%d")
-                )
+                dateInFuture = TradingCalendarUtils.getSessionDateXSessions(
+                    trade.entry_time.date(), self.timeframeLen - 1
+                ).strftime("%Y-%m-%d")
 
                 # print(trade.entry_time.date())
 
