@@ -5,7 +5,7 @@ import pendulum
 import pandas as pd
 
 from typing import Dict
-from utils.TradingCalendarUtils import TradingCalendarUtils
+from ..utils.TradingCalendarUtils import TradingCalendarUtils
 
 
 def SMA(array, n):

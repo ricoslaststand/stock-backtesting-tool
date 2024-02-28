@@ -26,6 +26,7 @@ def main() -> None:
     hits = []
     for stock in stocks:
         data = None
+
         try:
             # TODO: Create separate class to retrieve stock data and return Dataframe
             data = pdr.get_data_yahoo(
