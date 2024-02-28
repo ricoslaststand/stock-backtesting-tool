@@ -18,15 +18,15 @@ from pandas_datareader import data as pdr
 
 # download dataframe
 
-from app.strategies.VolumeDiff import VolumeDiff
+from .strategies.VolumeDiff import VolumeDiff
 
 from backtesting import Backtest
 
-from app.clients.StockClient import StockClient
+from .clients.StockClient import StockClient
 
-from app.models.Stock import StockClosedTrade
+from .models.Stock import StockClosedTrade
 
-from app.utils.TradingCalendarUtils import TradingCalendarUtils
+from .utils.TradingCalendarUtils import TradingCalendarUtils
 
 yf.pdr_override()
 
