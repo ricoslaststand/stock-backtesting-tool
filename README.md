@@ -13,7 +13,10 @@ Created this tool to help backtest trading strategies while providing a frontend
 
 - [ ] Refactor file generation into different classes
 - [X] Dockerize application
-- [ ] Create
+- [ ] Create Cron Job to Pull Down Stock Market Data
+- [ ] Add Clickhouse to Store Stock Market Data
+  - [ ] Store Hourly Stock Market Data
+  - [ ] Store Stock Earning Dates
 
 ## Architecture
 
