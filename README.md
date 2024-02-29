@@ -27,5 +27,6 @@ flowchart LR
     subgraph Render:
         direction LR
         FastAPI<-->PostgreSQL
+        FastAPI<-->yahoo-finance[Yahoo Finance]
     end
 ```
