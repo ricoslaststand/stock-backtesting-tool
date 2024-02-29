@@ -15,6 +15,7 @@ yf.pdr_override()
 
 session = requests_cache.CachedSession("stock_cache")
 
+
 class StockClient:
     dateFormat = "%Y-%m-%d"
 
@@ -42,6 +43,12 @@ class StockClient:
             stocks = filter(filterTickerSymbol, stocks)
 
         return stocks
-    
-    def getStockMarketData(tickerSymbol: str, startDate: dt.date, endDate: dt.date) -> pd.DataFrame | pd.Series:
-        return pdr.get_data_yahoo(tickerSymbol, start=startDate.strftime(StockClient.dateFormat), end=endDate.strftime(StockClient.dateFormat))
+
+    def getStockMarketData(
+        tickerSymbol: str, startDate: dt.date, endDate: dt.date
+    ) -> pd.DataFrame | pd.Series:
+        return pdr.get_data_yahoo(
+            tickerSymbol,
+            start=startDate.strftime(StockClient.dateFormat),
+            end=endDate.strftime(StockClient.dateFormat),
+        )

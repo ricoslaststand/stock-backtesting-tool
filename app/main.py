@@ -41,13 +41,13 @@ def read_root(ticker_symbol: str = "SPY"):
 
     return results.to_json()
 
+
 @app.get("/stocks", response_class=HTMLResponse)
 def read_stocks(request: Request, ticker_symbol: Union[str, None] = None):
     stocks = StockClient.getStocks(ticker_symbol)
 
     return templates.TemplateResponse(
-        "stocks.html",
-        {"request": request, "stocks": stocks}
+        "stocks.html", {"request": request, "stocks": stocks}
     )
 
 

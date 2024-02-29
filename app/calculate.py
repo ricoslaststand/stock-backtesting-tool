@@ -27,9 +27,7 @@ def main() -> None:
 
         try:
             data = StockClient.getStockMarketData(
-                stock.symbol,
-                date(2023, 3, 1),
-                date(2024, 3, 1)
+                stock.symbol, date(2023, 3, 1), date(2024, 3, 1)
             )
         except Exception:
             continue
@@ -133,7 +131,6 @@ main()
 
 def main():
     """Run administrative tasks."""
-    print("Hello World")
     tcUtils.getLastXSessions(date.fromisoformat("2020-03-19"), 10)
 
 
