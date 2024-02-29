@@ -8,7 +8,7 @@ import yfinance as yf
 
 import json
 
-import requests
+from backtesting import Backtest
 
 from fastapi.templating import Jinja2Templates
 
@@ -17,8 +17,6 @@ from pandas_datareader import data as pdr
 # download dataframe
 
 from .strategies.VolumeDiff import VolumeDiff
-
-from backtesting import Backtest
 
 from .clients.StockClient import StockClient
 
@@ -43,50 +41,21 @@ def read_root(ticker_symbol: str = "SPY"):
 
     results = bt.run()
 
-    return json.loads(results.to_json())
-
-
-def filterTickerSymbol(stock, tickerSymbol):
-    return stock["Name"].lower() in tickerSymbol
-
-
-def getListOfStocks(tickerSymbol: str | None = None):
-    stockResponse = requests.get(
-        "https://pkgstore.datahub.io/core/s-and-p-500-companies/constituents_json/data/297344d8dc0a9d86b8d107449c851cc8/constituents_json.json"
-    )
-
-    if not stockResponse.ok:
-        return {"error": "Unable to fetch stocks data"}
-
-    def filterTickerSymbol(stock):
-        return stock["Name"].startswith(tickerSymbol)
-
-    stocks = None
-
-    if tickerSymbol:
-        stocks = filter(filterTickerSymbol, stockResponse.json())
-    else:
-        stocks = stockResponse.json()
-
-    return stocks
-
+    return results.to_json()
 
 @app.get("/stocks", response_class=HTMLResponse)
 def read_stocks(request: Request, ticker_symbol: Union[str, None] = None):
-    stocks = getListOfStocks(ticker_symbol)
+    stocks = StockClient.getStocks(ticker_symbol)
 
-    context = {"request": request, "stocks": stocks}
-
-    response = templates.TemplateResponse("stocks.html", context)
-
-    return response
+    return templates.TemplateResponse(
+        "stocks.html",
+        {"request": request, "stocks": stocks}
+    )
 
 
 @app.get("/stocks-list")
 def get_stocks_list(tickerSymbol: str | None = None):
-    stocks = getListOfStocks(tickerSymbol)
-
-    print("ticker_symbol =", tickerSymbol)
+    stocks = StockClient.getStocks(tickerSymbol)
 
     return {"stocks": stocks}
 

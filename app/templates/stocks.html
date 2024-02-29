@@ -20,7 +20,7 @@
     >
     <ul id="stocks" class="uk-list uk-list-divider">
       {% for stock in stocks %}
-        <li><a href="/?ticker_symbol={{ stock.Symbol }}">{{ stock.Name }} ({{ stock.Symbol }})</a></li>
+        <li><a href="/?ticker_symbol={{ stock.symbol }}">{{ stock.name }} ({{ stock.symbol }})</a></li>
       {% endfor %}
     </ul>
   </div>
