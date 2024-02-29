@@ -26,7 +26,6 @@ flowchart LR
     frontend[HTMX Frontend]<-->FastAPI
     subgraph Render:
         direction LR
-        FastAPI<-->PostgreSQL
         FastAPI<-->yahoo-finance[Yahoo Finance]
     end
 ```
