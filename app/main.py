@@ -6,8 +6,6 @@ from typing import Union
 
 import yfinance as yf
 
-import json
-
 from backtesting import Backtest
 
 from fastapi.templating import Jinja2Templates

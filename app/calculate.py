@@ -28,9 +28,10 @@ def main() -> None:
         data = None
 
         try:
-            # TODO: Create separate class to retrieve stock data and return Dataframe
-            data = pdr.get_data_yahoo(
-                stock.symbol, start="2023-03-01", end="2024-03-01"
+            data = StockClient.getStockMarketData(
+                stock.symbol,
+                date(2023, 3, 1),
+                date(2024, 3, 1)
             )
         except Exception:
             continue
