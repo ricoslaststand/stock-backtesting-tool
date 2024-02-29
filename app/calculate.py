@@ -11,8 +11,6 @@ import csv
 from backtesting import Backtest
 from datetime import date
 
-from pandas_datareader import data as pdr
-
 yf.pdr_override()
 
 

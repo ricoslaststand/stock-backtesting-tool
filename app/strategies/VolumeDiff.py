@@ -5,7 +5,7 @@ import pendulum
 import pandas as pd
 
 from typing import Dict
-from ..utils.TradingCalendarUtils import TradingCalendarUtils
+from utils.TradingCalendarUtils import TradingCalendarUtils
 
 
 def SMA(array, n):
@@ -15,7 +15,7 @@ def SMA(array, n):
 
 class VolumeDiff(Strategy):
     name = "VolumeDiff"
-    timeframeLen = 4
+    timeframeLen = 3
     exitDays: Dict[str, str]
     margin = 1.10
     count = 0
