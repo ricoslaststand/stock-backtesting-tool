@@ -28,6 +28,7 @@ stocksClient = StockClient
 
 @app.get("/")
 def read_root(ticker_symbol: str = "SPY"):
+    # TODO: make start and end time query parameters with defaults and add validation for them
     data = pdr.get_data_yahoo(ticker_symbol, start="2023-03-01", end="2024-03-01")
 
     if len(data) == 0:

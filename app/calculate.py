@@ -26,6 +26,7 @@ def main() -> None:
         data = None
 
         try:
+            # TODO: make these command line arguments that either passed in or default to set values
             data = StockClient.getStockMarketData(
                 stock.symbol, date(2023, 3, 1), date(2024, 3, 1)
             )
