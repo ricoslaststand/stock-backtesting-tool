@@ -19,7 +19,7 @@ Created this tool to help backtest trading strategies while providing a frontend
 Within the `app` folder, a variation of the clean architecture was applied in order to have a separation of concerns between various files.
 
 - `clients`: any kind of code that employs fetching data from a third-party data source would be (e.g., an API client that utilizes HTTP).
-- `models`: domain object models that are used as a common language between different layers of the application. 
+- `models`: domain object models that are used as a common language between different layers of the application.
 - `services`: classes that might do some kind of data aggregation or data manipulation that might interact with different data sources.
 - `strategies`: the stock trading execution strategies that determine when to buy and sell a stock.
 - `templates`: the UI layer that is rendered in the FastAPI route.
