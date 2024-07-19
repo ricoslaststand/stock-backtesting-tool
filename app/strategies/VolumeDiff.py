@@ -19,6 +19,7 @@ class VolumeDiff(Strategy):
     exitDays: Dict[str, str]
     margin = 1.10
     count = 0
+    VOLUME_THRESHOLD = 0.8
 
     def init(self):
         self.exitDays = {}
@@ -53,11 +54,7 @@ class VolumeDiff(Strategy):
                     trade.real_entry_date = lastTwo.index.values[0]
                     trade.real_entry_price = lastTwo.at[trade.real_entry_date, "Close"]
                     trade.real_volume = lastTwo.at[trade.real_entry_date, "Volume"]
-
-                    # print("trade.real_entry_price =", trade.real_entry_price)
-
-                    # print("trade.entry_time =", trade.entry_time)
-                    # print("trade_real_entry_date =", trade.real_entry_date)
+                    
                     trade.exit_date = dateInFuture
 
                 if trade.exit_date == today.strftime("%Y-%m-%d"):
@@ -69,7 +66,6 @@ class VolumeDiff(Strategy):
                 if row["Volume"] < row1["Volume"]:
                     return False
 
-        #
         lastTwoVolumeSum = 0
         twoPriorVolumeSum = 0
 
@@ -85,7 +81,7 @@ class VolumeDiff(Strategy):
         if (
             self.maVol2 is None
             or self.maVol90 is None
-            or (self.maVol2 / self.maVol90) <= 0.8
+            or (self.maVol2 / self.maVol90) <= self.VOLUME_THRESHOLD
         ):
             return False
 

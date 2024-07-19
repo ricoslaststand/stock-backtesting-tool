@@ -45,7 +45,7 @@ pre-commit install
 - List out all of the strategies that you have currently running via an endpoint.
 - Run a strategy
 - Store data in a ClickHouse
-  - ClickHouse, as a column-oriented OLAP DB, will allow and .
+  - ClickHouse, as a column-oriented OLAP DB, will allow for faster querying on larger datasets.
 
 ## TODO List
 
